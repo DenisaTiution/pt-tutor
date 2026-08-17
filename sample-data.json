@@ -64,5 +64,55 @@
       "nome": "Pronúncia",
       "descricao": "Trabalhar sons nasais e ditongos."
     }
+  ],
+  "tabu": [
+    {
+      "id": "tb-1",
+      "palavra": "Gato",
+      "proibida1": "Animal",
+      "proibida2": "Bigodes"
+    },
+    {
+      "id": "tb-2",
+      "palavra": "Livro",
+      "proibida1": "Páginas",
+      "proibida2": "Ler"
+    },
+    {
+      "id": "tb-3",
+      "palavra": "Carro",
+      "proibida1": "Rodas",
+      "proibida2": "Conduzir"
+    },
+    {
+      "id": "tb-4",
+      "palavra": "Viagem",
+      "proibida1": "Avião",
+      "proibida2": "Destino"
+    },
+    {
+      "id": "tb-5",
+      "palavra": "Restaurante",
+      "proibida1": "Comida",
+      "proibida2": "Garfador"
+    },
+    {
+      "id": "tb-6",
+      "palavra": "Telefone",
+      "proibida1": "Chamar",
+      "proibida2": "Número"
+    },
+    {
+      "id": "tb-7",
+      "palavra": "Praia",
+      "proibida1": "Mar",
+      "proibida2": "Areia"
+    },
+    {
+      "id": "tb-8",
+      "palavra": "Festa",
+      "proibida1": "Alegria",
+      "proibida2": "Celebração"
+    }
   ]
 }

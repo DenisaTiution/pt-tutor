@@ -1,7 +1,7 @@
 // Minimal IndexedDB helper and schema
 const DB_NAME = 'pt-tutor';
 const DB_VERSION = 1;
-const stores = ['alunos','planos','sessoes','vocab','gramatica','recursos','areas'];
+const stores = ['alunos','planos','sessoes','vocab','gramatica','recursos','areas','tabu'];
 
 const DB = {
   db: null,

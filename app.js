@@ -369,7 +369,42 @@
   async function renderVocab(){ await renderSimpleList('vocab','Vocabulário','palavra'); }
   async function renderGramatica(){ await renderSimpleList('gramatica','Gramática','titulo'); }
   async function renderAreas(){ await renderSimpleList('areas','Áreas a Praticar','nome'); }
-  async function renderRecursos(){ await renderSimpleList('recursos','Recursos / Atividades','titulo'); }
+  
+  async function renderRecursos(){
+    const recursos = await DB.getAll('recursos');
+    const tabuCards = await DB.getAll('tabu');
+    appEl.innerHTML = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3>Recursos / Atividades</h3>
+          <div style="display:flex;gap:8px">
+            <button id="novoRecurso" class="primary">Novo Recurso</button>
+            <button id="jogarTabu" class="secondary">Jogar Tabu</button>
+          </div>
+        </div>
+        <div id="list"></div>
+        <hr>
+        <h4>Cartas de Tabu (${tabuCards.length})</h4>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button id="novoTabu" class="secondary">Nova Carta Tabu</button>
+          <button id="gerirTabu" class="tertiary">Gerir Cartas</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('novoRecurso').addEventListener('click', ()=> renderSimpleForm('recursos', null, 'titulo'));
+    document.getElementById('jogarTabu').addEventListener('click', ()=> renderTabuGame());
+    document.getElementById('novoTabu').addEventListener('click', ()=> renderTabuForm(null));
+    document.getElementById('gerirTabu').addEventListener('click', ()=> renderTabuList());
+    
+    const list = document.getElementById('list');
+    if (!recursos.length) list.innerHTML = '<p class="small">Sem recursos.</p>';
+    else list.innerHTML = recursos.map(it=>`<div class="card row"><div><strong>${it.titulo||''}</strong><div class="small">${it.descricao||''}</div></div><div style="display:flex;gap:8px"><button class="tertiary" data-id="${it.id}" data-action="edit">Editar</button><button class="tertiary" data-id="${it.id}" data-action="delete">Apagar</button></div></div>`).join('');
+    list.querySelectorAll('button').forEach(b=> b.addEventListener('click', async ()=>{
+      const id=b.dataset.id;
+      if (b.dataset.action==='edit') renderSimpleForm('recursos', id, 'titulo');
+      if (b.dataset.action==='delete'){ if(!confirm('Apagar?')) return; await DB.delete('recursos', id); navigate('recursos'); }
+    }));
+  }
 
   async function renderSimpleList(store, title, field){
     const items = await DB.getAll(store);
@@ -417,6 +452,119 @@
       await DB.add(store, obj);
       navigate(store==='vocab'?'vocab': store==='gramatica'?'gramatica': store==='areas'?'areas':'recursos');
     });
+  }
+
+  // TABU GAME
+  let currentTabuIndex = 0;
+  let tabuCards = [];
+
+  async function renderTabuGame(){
+    tabuCards = await DB.getAll('tabu');
+    if (!tabuCards.length) {
+      alert('Sem cartas de Tabu. Crie algumas primeiro!');
+      return navigate('recursos');
+    }
+    currentTabuIndex = 0;
+    showTabuCard();
+  }
+
+  function showTabuCard(){
+    if (currentTabuIndex >= tabuCards.length) {
+      appEl.innerHTML = `
+        <div class="card" style="text-align:center;padding:40px">
+          <h3>Fim do Jogo!</h3>
+          <p>Viu ${tabuCards.length} cartas.</p>
+          <button id="backRecursos" class="primary">Voltar aos Recursos</button>
+        </div>
+      `;
+      document.getElementById('backRecursos').addEventListener('click', ()=> navigate('recursos'));
+      return;
+    }
+    const card = tabuCards[currentTabuIndex];
+    appEl.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px;">
+        <div class="small" style="margin-bottom:20px">Carta ${currentTabuIndex + 1} / ${tabuCards.length}</div>
+        <div style="background:#f0f4f8;padding:30px;border-radius:12px;margin-bottom:30px">
+          <h2 style="margin:0;color:#2b6cb0;font-size:48px">${card.palavra}</h2>
+        </div>
+        <div style="background:#fee;padding:20px;border-radius:8px;margin-bottom:30px;border-left:4px solid #d81b60">
+          <div class="small" style="color:#d81b60;font-weight:bold">Palavras proibidas:</div>
+          <div style="font-size:18px;margin-top:8px;font-weight:600">${card.proibida1}</div>
+          <div style="font-size:18px;font-weight:600">${card.proibida2}</div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button id="acertou" class="primary" style="padding:12px 24px;font-size:16px">Acertou ✓</button>
+          <button id="saltou" class="tertiary" style="padding:12px 24px;font-size:16px">Saltar →</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('acertou').addEventListener('click', ()=>{
+      currentTabuIndex++;
+      showTabuCard();
+    });
+    document.getElementById('saltou').addEventListener('click', ()=>{
+      currentTabuIndex++;
+      showTabuCard();
+    });
+  }
+
+  async function renderTabuForm(id){
+    const card = id? await DB.get('tabu', id):{};
+    appEl.innerHTML = `
+      <div class="card">
+        <h3>${id? 'Editar Carta Tabu':'Nova Carta Tabu'}</h3>
+        <label>Palavra <input id="tabPalavra" value="${card.palavra||''}" placeholder="ex: Gato"></label>
+        <label>Palavra Proibida 1 <input id="tabProibida1" value="${card.proibida1||''}" placeholder="ex: Animal"></label>
+        <label>Palavra Proibida 2 <input id="tabProibida2" value="${card.proibida2||''}" placeholder="ex: Bigodes"></label>
+        <div class="action-row">
+          <button id="saveTab" class="primary">Guardar</button>
+          <button id="cancelTab" class="tertiary">Cancelar</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('cancelTab').addEventListener('click', ()=> navigate('recursos'));
+    document.getElementById('saveTab').addEventListener('click', async ()=>{
+      const p = document.getElementById('tabPalavra').value.trim();
+      const pr1 = document.getElementById('tabProibida1').value.trim();
+      const pr2 = document.getElementById('tabProibida2').value.trim();
+      if (!p || !pr1 || !pr2) { alert('Preencha todos os campos.'); return; }
+      const obj = { id: card.id || 'tb-'+Date.now(), palavra: p, proibida1: pr1, proibida2: pr2 };
+      await DB.add('tabu', obj);
+      navigate('recursos');
+    });
+  }
+
+  async function renderTabuList(){
+    const tabuCards = await DB.getAll('tabu');
+    appEl.innerHTML = `
+      <div class="card">
+        <h3>Cartas de Tabu</h3>
+        <div id="tabuListDiv"></div>
+      </div>
+    `;
+    const div = document.getElementById('tabuListDiv');
+    if (!tabuCards.length) div.innerHTML = '<p class="small">Sem cartas.</p>';
+    else div.innerHTML = tabuCards.map(c=>`
+      <div class="card" style="background:#f9f9f9">
+        <div class="row">
+          <div>
+            <strong style="font-size:18px">${c.palavra}</strong>
+            <div class="small" style="margin-top:8px">🚫 ${c.proibida1}, ${c.proibida2}</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="tertiary" data-id="${c.id}" data-action="edit">Editar</button>
+            <button class="tertiary" data-id="${c.id}" data-action="delete">Apagar</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    div.querySelectorAll('button').forEach(b=>
+      b.addEventListener('click', async ()=>{
+        const id = b.dataset.id;
+        if (b.dataset.action==='edit') renderTabuForm(id);
+        if (b.dataset.action==='delete'){ if (!confirm('Apagar carta?')) return; await DB.delete('tabu', id); renderTabuList(); }
+      })
+    );
   }
 
   // initial navigate
