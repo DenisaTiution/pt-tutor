@@ -3,79 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PT Tutor — Painel</title>
+  <title>Tabu — Jogo de Palavras</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#2b6cb0">
+  <meta name="theme-color" content="#d81b60">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 </head>
 <body>
   <div id="root">
-    <aside class="sidebar">
-      <h1 class="brand">PT Tutor</h1>
-      <nav>
-        <button data-route="dashboard" class="nav-btn active">Página Inicial</button>
-        <button data-route="alunos" class="nav-btn">Alunos</button>
-        <button data-route="planos" class="nav-btn">Planeamento</button>
-        <button data-route="sessoes" class="nav-btn">Histórico de Aulas</button>
-        <button data-route="vocab" class="nav-btn">Vocabulário</button>
-        <button data-route="gramatica" class="nav-btn">Gramática</button>
-        <button data-route="areas" class="nav-btn">Áreas a Praticar</button>
-        <button data-route="recursos" class="nav-btn">Recursos / Atividades</button>
-      </nav>
-      <div class="sidebar-footer">
-        <button id="importBtn" class="tertiary">Importar JSON</button>
-        <button id="exportBtn" class="tertiary">Exportar JSON</button>
-        <small>Dados locais — só no seu dispositivo</small>
-      </div>
-    </aside>
+    <header class="header">
+      <h1>🎮 Tabu</h1>
+      <p class="subtitle">Jogo de Palavras em Português</p>
+    </header>
 
-    <main class="main">
-      <header class="main-header">
-        <div>
-          <h2 id="page-title">Página Inicial</h2>
-          <p class="subtitle" id="page-sub">Resumo rápido</p>
-        </div>
-        <div>
-          <button id="quickNoteBtn" class="primary">Nota Rápida</button>
-          <button id="loadSampleBtn" class="secondary">Carregar Dados de Exemplo</button>
-        </div>
-      </header>
-
-      <section id="app" class="content">
-        <!-- App views render here -->
-      </section>
+    <main class="container">
+      <section id="app"></section>
     </main>
-  </div>
 
-  <!-- Quick note modal -->
-  <div id="quickNoteModal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <h3>Nota Rápida pós-aula</h3>
-      <label>Aluno (opcional)
-        <select id="quickNoteAluno"><option value="">— escolher —</option></select>
-      </label>
-      <label>Resumo / Notas
-        <textarea id="quickNoteText" rows="6" placeholder="Escreva as notas da aula aqui..."></textarea>
-      </label>
-      <div class="modal-actions">
-        <button id="quickNoteSave" class="primary">Guardar</button>
-        <button id="quickNoteCancel" class="tertiary">Cancelar</button>
-      </div>
-    </div>
+    <footer class="footer">
+      <small>Dados guardados localmente no seu dispositivo</small>
+    </footer>
   </div>
-
-  <input id="fileInput" type="file" accept="application/json" style="display:none">
 
   <script src="db.js"></script>
   <script src="app.js"></script>
 
   <script>
-    // Register service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').catch(function(err){
-        console.warn('SW registration falhou:', err);
-      });
+      navigator.serviceWorker.register('service-worker.js').catch(err => console.warn('SW error:', err));
     }
   </script>
 </body>

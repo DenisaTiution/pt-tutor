@@ -1,11 +1,11 @@
 {
-  "name": "PT Tutor",
-  "short_name": "PTTutor",
+  "name": "Tabu — Jogo de Palavras",
+  "short_name": "Tabu",
   "lang": "pt-PT",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2b6cb0",
+  "theme_color": "#d81b60",
   "icons": [
     {
       "src": "icons/icon.svg",

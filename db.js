@@ -1,92 +1,77 @@
-// Minimal IndexedDB helper and schema
-const DB_NAME = 'pt-tutor';
+const DB_NAME = 'tabu-game';
 const DB_VERSION = 1;
-const stores = ['alunos','planos','sessoes','vocab','gramatica','recursos','areas','tabu'];
+const STORE = 'cartas';
 
 const DB = {
   db: null,
-  async init(){
+  
+  async init() {
     if (this.db) return;
-    this.db = await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onupgradeneeded = (e) => {
         const db = e.target.result;
-        for (const s of stores){
-          if (!db.objectStoreNames.contains(s)) db.createObjectStore(s, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(STORE)) {
+          db.createObjectStore(STORE, { keyPath: 'id' });
         }
       };
-      req.onsuccess = e => resolve(e.target.result);
-      req.onerror = e => reject(e.target.error);
+      req.onsuccess = (e) => {
+        this.db = e.target.result;
+        resolve();
+      };
+      req.onerror = () => reject(req.error);
     });
   },
-  tx(store, mode='readonly'){
-    const t = this.db.transaction(store, mode);
-    return { store: t.objectStore(store), done: new Promise((res,rej)=>t.oncomplete=res) };
-  },
-  async add(store, item){
+
+  async add(card) {
     await this.init();
-    if (!item.id) item.id = uuid();
-    const { store:os } = this.tx(store, 'readwrite');
-    os.put(item);
-    return item.id;
-  },
-  async get(store, id){
-    await this.init();
-    return new Promise((res,rej)=>{
-      const { store:os } = this.tx(store);
-      const r = os.get(id);
-      r.onsuccess = ()=>res(r.result);
-      r.onerror = ()=>rej(r.error);
+    if (!card.id) card.id = 'c-' + Date.now();
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(STORE, 'readwrite');
+      const req = tx.objectStore(STORE).put(card);
+      req.onsuccess = () => resolve(card.id);
+      req.onerror = () => reject(req.error);
     });
   },
-  async getAll(store){
+
+  async get(id) {
     await this.init();
-    return new Promise((res,rej)=>{
-      const { store:os } = this.tx(store);
-      const r = os.getAll();
-      r.onsuccess = ()=>res(r.result);
-      r.onerror = ()=>rej(r.error);
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(STORE, 'readonly');
+      const req = tx.objectStore(STORE).get(id);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
     });
   },
-  async delete(store, id){
+
+  async getAll() {
     await this.init();
-    const { store:os } = this.tx(store,'readwrite');
-    os.delete(id);
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(STORE, 'readonly');
+      const req = tx.objectStore(STORE).getAll();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
   },
-  async clear(store){
+
+  async delete(id) {
     await this.init();
-    const { store:os } = this.tx(store,'readwrite');
-    os.clear();
-  },
-  async exportAll(){
-    await this.init();
-    const out = {};
-    for (const s of stores){
-      out[s] = await this.getAll(s);
-    }
-    return out;
-  },
-  async importAll(data){
-    await this.init();
-    for (const s of stores){
-      if (data[s] && Array.isArray(data[s])){
-        // clear store then add
-        const tx = this.db.transaction(s,'readwrite');
-        tx.objectStore(s).clear();
-        for (const item of data[s]) tx.objectStore(s).put(item);
-        await new Promise(r=>tx.oncomplete=r);
-      }
-    }
-  },
-  async loadSample(sample){
-    if (!sample) sample = await (await fetch('sample-data.json')).json();
-    await this.importAll(sample);
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(STORE, 'readwrite');
+      const req = tx.objectStore(STORE).delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
   }
 };
 
-// small uuid helper
-function uuid(){
-  return 'id-'+([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16)
-  );
-}
+const SAMPLE_CARDS = [
+  { palavra: 'Gato', proibida1: 'Animal', proibida2: 'Bigodes' },
+  { palavra: 'Livro', proibida1: 'Páginas', proibida2: 'Ler' },
+  { palavra: 'Carro', proibida1: 'Rodas', proibida2: 'Conduzir' },
+  { palavra: 'Viagem', proibida1: 'Avião', proibida2: 'Destino' },
+  { palavra: 'Restaurante', proibida1: 'Comida', proibida2: 'Garfo' },
+  { palavra: 'Telefone', proibida1: 'Chamar', proibida2: 'Número' },
+  { palavra: 'Praia', proibida1: 'Mar', proibida2: 'Areia' },
+  { palavra: 'Festa', proibida1: 'Alegria', proibida2: 'Celebração' }
+];

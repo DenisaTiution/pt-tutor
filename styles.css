@@ -1,48 +1,346 @@
-:root{
-  --bg:#f6f8fb;
-  --card:#ffffff;
-  --muted:#6b7280;
-  --accent:#2b6cb0;
-  --accent-2:#2c7a7b;
-  --gap:14px;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  color-scheme: light;
+:root {
+  --primary: #d81b60;
+  --primary-dark: #a01250;
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --text: #212121;
+  --text-muted: #666666;
+  --border: #e0e0e0;
+  --success: #4caf50;
+  --danger: #f44336;
 }
-*{box-sizing:border-box}
-html,body,#root{height:100%;margin:0;background:var(--bg);color:#0f172a}
-#root{display:flex;min-height:100vh}
-.sidebar{
-  width:260px;background:linear-gradient(180deg,#ffffff, #f7fbff);border-right:1px solid #e6eef8;padding:18px;display:flex;flex-direction:column;gap:12px;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-.brand{margin:0;font-size:20px;color:var(--accent)}
-nav{display:flex;flex-direction:column;gap:6px}
-.nav-btn{
-  text-align:left;padding:10px;border-radius:8px;border:0;background:transparent;color:#0f172a;cursor:pointer;font-size:15px
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
-.nav-btn:hover{background:#eef5ff}
-.nav-btn.active{background:var(--accent);color:white}
-.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:8px}
-.tertiary{background:transparent;border:1px solid #e2e8f0;padding:8px;border-radius:6px;cursor:pointer}
-.main{flex:1;display:flex;flex-direction:column}
-.main-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e6eef8;background:transparent}
-.main-header h2{margin:0}
-.subtitle{margin:0;color:var(--muted);margin-top:6px}
-.content{padding:20px}
-.primary{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
-.secondary{background:transparent;border:1px solid #cfe3ff;padding:8px 12px;border-radius:8px;cursor:pointer}
-.card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 1px 2px rgba(15,23,42,0.03);margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media (max-width:900px){.sidebar{display:none}.grid{grid-template-columns:1fr}}
-.list{display:flex;flex-direction:column;gap:10px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.small{font-size:13px;color:var(--muted)}
-.form-row{display:flex;gap:8px;flex-wrap:wrap}
-label{display:block;font-size:13px;margin-bottom:6px}
-input,textarea,select{width:100%;padding:8px;border:1px solid #e6eef8;border-radius:8px;background:white}
-button{font:inherit}
-.action-row{display:flex;gap:8px;margin-top:8px}
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,0.35)}
-.modal.hidden{display:none}
-.modal-content{width:90%;max-width:560px;background:white;padding:18px;border-radius:10px}
-.footer-note{color:var(--muted);font-size:13px;margin-top:8px}
-.link{color:var(--accent);text-decoration:underline;cursor:pointer}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  font-size: 40px;
+  margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.container {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 20px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .button-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(216, 27, 96, 0.3);
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background: #f0f0f0;
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn-success:hover {
+  background: #45a049;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #da190b;
+}
+
+.btn-tertiary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-tertiary:hover {
+  background: var(--bg);
+}
+
+.btn-small {
+  padding: 8px 12px;
+  font-size: 14px;
+  width: auto;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.action-row button {
+  flex: 1;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.game-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-card .word {
+  font-size: 52px;
+  font-weight: bold;
+  margin: 20px 0;
+  letter-spacing: 1px;
+}
+
+.forbidden-box {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--danger);
+}
+
+.forbidden-box .label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--danger);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.forbidden-box .word {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 6px 0;
+}
+
+.progress {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20px;
+}
+
+.home-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-buttons button {
+  padding: 16px;
+  font-size: 16px;
+}
+
+.card-item {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.card-item .word-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card-item .forbidden {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.card-item .actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.card-item .actions button {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.footer {
+  text-align: center;
+  padding: 16px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.back-btn {
+  margin-bottom: 16px;
+  background: var(--bg);
+  color: var(--primary);
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: auto;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.back-btn:hover {
+  background: var(--border);
+}
