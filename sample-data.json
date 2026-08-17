@@ -1,0 +1,68 @@
+{
+  "alunos": [
+    {
+      "id": "a-1",
+      "nome": "Inês Carvalho",
+      "nivel": "A2",
+      "objectivos": "Melhorar expressão oral e tempo verbal passado",
+      "notas": "Prefere aulas ao fim-de-semana.",
+      "dataCriado": "2026-08-01T10:00:00Z"
+    },
+    {
+      "id": "a-2",
+      "nome": "Rui Santos",
+      "nivel": "B1",
+      "objectivos": "Conversação geral e vocabulário para viagens",
+      "notas": "",
+      "dataCriado": "2026-07-12T09:00:00Z"
+    }
+  ],
+  "planos": [
+    {
+      "id": "pl-1",
+      "titulo": "Aula: Passado simples vs composto",
+      "objectivos": "Compreender uso do pretérito perfeito e perfeito composto",
+      "descricao": "Exercícios de conjugação, diálogo e prática oral",
+      "dataCriado": "2026-08-05T09:00:00Z"
+    }
+  ],
+  "sessoes": [
+    {
+      "id": "s-1",
+      "alunoId": "a-1",
+      "resumo": "Trabalhámos o pretérito perfeito composto. Inês praticou diálogos. Notar dificuldade em usar particípio.",
+      "dataHora": "2026-08-10T18:00:00Z",
+      "criadoEm": "2026-08-10T19:00:00Z"
+    }
+  ],
+  "vocab": [
+    {
+      "id": "v-1",
+      "palavra": "deslocar-se",
+      "descricao": "Exemplo: 'Eu desloquei-me para Lisboa.'",
+      "notas": ""
+    }
+  ],
+  "gramatica": [
+    {
+      "id": "g-1",
+      "titulo": "Pretérito Perfeito Composto",
+      "descricao": "Usado para ações contínuas recentes. Ex.: Tenho estudado muito.",
+      "notas": ""
+    }
+  ],
+  "recursos": [
+    {
+      "id": "r-1",
+      "titulo": "Exercício: diálogo em pares",
+      "descricao": "Ficha de diálogo para prática oral (sugestão)."
+    }
+  ],
+  "areas": [
+    {
+      "id": "area-1",
+      "nome": "Pronúncia",
+      "descricao": "Trabalhar sons nasais e ditongos."
+    }
+  ]
+}
